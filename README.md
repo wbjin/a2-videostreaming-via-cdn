@@ -1,6 +1,6 @@
 # Assignment 2: Video Streaming via CDN
 
-### Due: October 24th, 2021 at 11:59 PM
+### Due: October 13th, 2023 at 11:59 PM
 
 ## Table of contents
 * [Overview](#overview)
@@ -25,14 +25,14 @@ The figure above depicts a high level view of what this system looks like in the
 (1) the client's IP address (from which it learns the client's geographic location) and
 (2) current load on the content servers (which the servers periodically report to the DNS server).
 
-Once the client has the IP address for one of the content servers, it begins requesting chunks of the video the user requested. The video is encoded at multiple bitrates; as the client player receives video data, it calculates the throughput of the transfer and requests the highest bitrate the connection can support.
+Once the client has the IP address for one of the content servers, it begins requesting chunks of the video the user requested. The video is encoded at multiple bitrates. As the client player receives video data, it calculates the throughput of the transfer and it requests the highest bitrate the connection can support.
 
 ### Video CDN in this Assignment
 Implementing an entire CDN is difficult; instead, you'll focus on a simplified version. First, your entire system will run on one host and rely on mininet to run several processes with arbitrary IP addresses on one machine. Mininet will also allow you to assign arbitrary link characteristics (bandwidth and latency) to each pair of “end hosts” (processes).
 
 <img src="our-CDN.png" title="Video CDN in assignment 2" alt="" width="330" height="111"/>
 
-You'll write the gray-shaded components in the figure above.
+You'll write the gray-shaded components (i.e. the DNS Server and Proxy) in the figure above.
 
 **Browser.** You'll use an off-the-shelf web browser (Firefox) to play videos served by your CDN (via your proxy).
 
@@ -57,24 +57,22 @@ After completing this programming assignment, students should be able to:
 <a name="clarifications"></a>
 ## Clarifications
 
-* For the proxy you implement in part 1, you will need to parse some HTTP traffic. To make your life easier for this project, you don't need to be concerned about parsing all the information in these HTTP messages. There are only two things that you need to care about searching for: `\r\n\r\n` and `Content-Length`. The former is used to denote the end of an HTTP header, and the latter is used to signify the size of the HTTP body in bytes.
+* For the proxy you implement in part 1, you will need to parse some HTTP traffic. To make your life easier for this project, you **do not** need to be concerned about parsing all the information in these HTTP messages. There are only two things that you need to care about searching for: `\r\n\r\n` and `Content-Length`. The former is used to denote the end of an HTTP header, and the latter is used to signify the size of the HTTP body in bytes.
 
 * The proxy should be able to support multiple browsers playing videos simultaneously. This means you should test with multiple browsers all connecting to the same proxy. In addition you should also test with multiple proxies each serve some number of browser(s), in order to make sure that each proxy instance does not interfere with others. 
 
-* While testing the proxy you implement in part 1, you may notice that one browser may sometimes open multiple connections to your proxy server. Your proxy should still continue to function as expected in this case. In order to account for these multiple connections, you may use the browser IP address to uniquely identify each connection (this implies that while testing your proxy server, each browser will have a unique IP address. For example, only one browser will have an IP address of 10.0.0.2).
+* While testing the proxy you implement in part 1, you may notice that one browser may sometimes open multiple connections to your proxy server. Your proxy should still continue to function as expected in this case. In order to account for these multiple connections, you may use the browser IP address to uniquely identify each connection. This implies that while testing your proxy server, each browser will have a unique IP address. (For example, only one browser will have an IP address of 10.0.0.2)
 
 * Throughput should be measured on each fragment. For example, throughput should be calculated separately for both Seg1-Frag1 and Seg1-Frag2.
 
 <a name="environment"></a>
 
 ## Environment Setup
-[We will provide a VM](https://www.dropbox.com/s/ajvta4j2t0bu42i/EECS489VM-1804-A2A3.ova?dl=0) that has all the components you need to get started on the assignment. While we tried to make the base VM work for all the projects, unfortunately this didn't come to fruition. Starting fresh also ensures a working environment free from accidental changes that may have been made in the first project.
+You will use [our provided VM](https://www.dropbox.com/s/ajvta4j2t0bu42i/EECS489VM-1804-A2A3.ova?dl=0) for the assignment. This VM has all the components you need to get started on the assignment. While we tried to make the base VM work for all the projects, unfortunately this didn't come to fruition. Starting fresh also ensures a working environment free from accidental changes that may have been made in the first project.
 
-**We encourage you to use VMware instead of Virtue Box for this and following projects, which is more compatible with different OS and is free with personal license.** For Windows and Linux users, we recommend [VMware Workstation Player](https://www.vmware.com/products/workstation-player/workstation-player-evaluation.html). For Mac users, we recommend [VMware Fusion Player](https://customerconnect.vmware.com/web/vmware/evalcenter?p=fusion-player-personal).
+**We encourage you to use VMware instead of Virtual Box for this and ALL following projects, which is more compatible with different OS and is free with personal license.** For Windows and Linux users, we recommend [VMware Workstation Player](https://www.vmware.com/products/workstation-player/workstation-player-evaluation.html). For Mac users, we recommend [VMware Fusion Player](https://customerconnect.vmware.com/web/vmware/evalcenter?p=fusion-player-personal).
 
-
-
-You may install tools that suit your workflow. **But DO NOT update the software in the VM.** 
+You may install tools that suit your workflow. However, **DO NOT update the software in the VM.** 
 You can find a guide on [how to troubleshoot the VM here](https://eecs388.org/vmguide.html#troubleshooting).
 
 This VM includes mininet, Apache, and all the files we will be streaming in this project. Both the username and password for this VM are `eecs489vm`. To start the Apache server, simply run the python script we provide by doing the following:
@@ -87,7 +85,6 @@ The Apache servers would not automatically stop after mininet is closed. You MUS
 
 `sudo killall httpd`
 
-
 Like any HTTP web server (not HTTPS) these instances of Apache will be reachable on TCP port `80`. For simplicity, all of our web traffic for this assignment will be unencrypted and be done over HTTP.
 
 For this project, we will be using an off the shelf browser (in this case, Firefox). To launch Firefox for this project, run the following command:
@@ -96,11 +93,11 @@ For this project, we will be using an off the shelf browser (in this case, Firef
 
 Here `<profile_num>` is a required command line argument that specifies the instance of Firefox you are launching. We support launching profiles 1-8, however, should you feel the need to test more thoroughly, you can launch it with a different number and simply create a new profile as needed. To ensure a separate connection for each instance of Firefox, we recommend that you launch Firefox with a different profile number (otherwise you might notice that different Firefox instances will sometimes share a connection with your proxy server).
 
-Also make sure you don't modify the firefox profiles we set up as well as the configuration files inside the current firefox build directory.
+Also make sure you don't modify the Firefox profiles we set up as well as the configuration files inside the current Firefox build directory.
 
-To be clear, you launch the web server, the firefox browser, the proxy server, and the DNS server all inside Mininet. You should test your code inside Mininet from day 1.
+To summarize: You will launch the web server, the Firefox browser, the proxy server, and the DNS server all inside Mininet. You should test your code inside Mininet from day 1.
 
-We're leaving it up to you to write your own Mininet topology script for testing the package as a whole. A simple Starfish topology (all hosts connected to one switch in the middle) should suffice for testing.
+We're leaving it up to you to write your own Mininet topology script for testing the package as a whole. A simple Starfish topology (all hosts connected to one switch in the middle) should suffice for testing. 
 
 > **NOTE:** For this project, we are disabling caching in the browser. If you do choose to create a new profile, please double check if caching is disabled by going to the `about:config` page and setting both `browser.cache.disk.enable` and `browser.cache.memory.enable` to `false`.
 
@@ -117,9 +114,9 @@ You are to implement a simple HTTP proxy, `miProxy`. It accepts connections from
 
 `(assign ephemeral)` is referring to the fact that the kernel will pick the proxy's TCP port when it connects to the web server's port `80`. Nothing more than the proxy calling `connect()` is happening here.
 
-`miProxy` should accept multiple concurrent connections from clients (Firefox web browser) using `select()` and be able to handle the required HTTP 1.1 requests for this assignment (e.g., HTTP `GET`).
+`miProxy` should accept multiple concurrent connections from clients (Firefox web browsers) using `select()` and be able to handle the required HTTP 1.1 requests for this assignment (e.g., HTTP `GET`).
 
-The picture above shows `miProxy` connected to multiple web servers, which would be the case if `miProxy` issued a DNS request for each new client connection received (e.g each new connection from an instance of Firefox). This is one approach for utilizing the DNS `nameserver` you will write in part 2. Another approach would be to issue a DNS request **once** when `miProxy` starts up, and direct all client requests to one web server for the entire runtime of `miProxy`. Either approach is acceptable for grading purposes, but the former is preferred because it provides more efficient load balancing. The former approach is also closer to the behavior of an actual load balancing proxy.
+The picture above shows `miProxy` connected to multiple web servers, which would be the case if `miProxy` issued a DNS request for each new client connection received (e.g each new connection from an instance of Firefox). This is one approach for utilizing the DNS `nameserver` you will write in part 2. Another approach would be to issue a DNS request **once** when `miProxy` starts up, and direct all client requests to one web server for the entire runtime of `miProxy`. Either approach is acceptable for grading purposes, but the former is preferred because it provides more efficient load balancing, and it is closer to the behavior of an actual load balancing proxy.
 
 We will cover the basic usage of `select()` in the discussion.
 
@@ -127,21 +124,21 @@ We will cover the basic usage of `select()` in the discussion.
 
 ### Throughput Calculation
 
-Your proxy measure the the throughput between the server and ifself to determine the bitrate. Your proxy should estimate each stream's throughput once per chunk. Note the start time of each chunk when your proxy started receiving the chunk from the server and save another timestamp when you have finished receiving the chunk from the server. Given the size of the chunk, you can now compute the throughput by dividing chunk size by time window.
+Your proxy measure the the throughput between the server and itself to determine the bitrate. Your proxy should estimate each stream's throughput once per chunk. Make sure to note the start time of each chunk when your proxy started receiving the chunk from the server, and save another timestamp when you have finished receiving the chunk from the server. Given the size of the chunk, you can now compute the throughput by dividing chunk size by the time window.
 
 Each video is a sequence of chunks. To smooth your throughput estimation, you should use an exponentially-weighted moving average (EWMA). Every time you make a new measurement (as outlined above), update your current throughput estimate as follows:
 
 `T_cur = alpha * T_new + (1 - alpha) * T_cur`
 
-The constant `0 ≤ alpha ≤ 1` controls the tradeoff between a smooth throughput estimate (`alpha` closer to 0) and one that reacts quickly to changes (`alpha` closer to 1). You will control `alpha` via a command line argument. When a new stream starts, set `T_cur` to the lowest available bitrate for that video.
+The constant `0 ≤ alpha ≤ 1` controls the tradeoff between a smooth throughput estimate (`alpha` closer to 0) and one that reacts quickly to changes (`alpha` closer to 1). You will control `alpha` via a command line argument. When a new stream starts, set `T_cur` to the *lowest* available bitrate for that video.
 
 ### Choosing a Bitrate
 
-Once your proxy has calculated the connection's current throughput, it should select the highest offered bitrate the connection can support. For this project, we say a connection can support a bitrate if the average throughput is at least 1.5 times the bitrate. For example, before your proxy should request chunks encoded at 1000 Kbps, its current throughput estimate should be at least 1.5 Mbps.
+Once your proxy has calculated the connection's current throughput, it should select the highest offered bitrate the connection can support. For this project, we say a connection can support a bitrate if the average throughput is at least 1.5 times the bitrate. For example, before your proxy should request chunks encoded at 1000 Kbps, its current throughput estimate should be at least 1500 Kbps (1.5 Mbps).
 
 Your proxy should learn which bitrates are available for a given video by parsing the manifest file (the ".f4m" initially requested at the beginning of the stream). The manifest is encoded in XML; each encoding of the video is described by a `<media>` element, whose bitrate attribute you should find.
 
-Your proxy replaces each chunk request with a request for the same chunk at the selected bitrate (in Kbps) by modifying the HTTP request’s `Request-URI`. Video chunk URIs are structured as follows:
+Your proxy will replace each chunk request with a request for the same chunk at the selected bitrate (in Kbps) by modifying the HTTP request’s `Request-URI`. Video chunk URIs are structured as follows:
 
 `/path/to/video/<bitrate>Seg<num>-Frag<num>`
 
@@ -153,7 +150,7 @@ To switch to a higher bitrate, e.g., 1000 Kbps, the proxy should modify the URI 
 
 `/path/to/video/1000Seg2-Frag3`
 
-> **IMPORTANT:** When the video player requests `big_buck_bunny.f4m`, you should instead return `big_buck_bunny_nolist.f4m`. This file does not list the available bitrates, preventing the video player from attempting its own bitrate adaptation. You proxy should, however, fetch `big_buck_bunny.f4m` for itself (i.e., don’t return it to the client) so you can parse the list of available encodings as described above. Your proxy should keep this list of available bitrates in a global container (not on a connection by connection basis).
+> **IMPORTANT:** When the video player requests `big_buck_bunny.f4m`, you should instead return `big_buck_bunny_nolist.f4m` to the video player. This file does not list the available bitrates, preventing the video player from attempting its own bitrate adaptation. Your proxy should, however, fetch `big_buck_bunny.f4m` for itself (i.e., don’t return it to the client) so you can parse the list of available encodings as described above. Your proxy should keep this list of available bitrates in a global container (not on a connection by connection basis).
 
 ### Running `miProxy`
 To operate `miProxy`, it should be invoked in one of two ways
@@ -188,7 +185,7 @@ In this mode of operation your proxy should obtain the web server's IP address b
 > *Also note: we are using our own implementation of DNS on top of TCP, not UDP.*
 
 ### miProxy Logging
-`miProxy` must create a log of its activity in a very particular format. If the log file already exists, `miProxy` overwrites the log. *After each chunk-file response from the web server*, it should append the following line to the log:
+`miProxy` must create a log of its activity in a very particular format. If the log file, specified via a command line argument, already exists, `miProxy` overwrites the log. *After each chunk-file response from the web server*, it should append the following line to the log:
 
 `<browser-ip> <chunkname> <server-ip> <duration> <tput> <avg-tput> <bitrate>`
 
@@ -236,7 +233,7 @@ In order for your proxy to be able to query your DNS server, you must also write
 
 * `TTL` Set this to 0 in all responses (no caching).
 
-We are also providing encoding and decoding functions to serialize and deserialize your DNS query and response. Be sure to use the functions we provide so that your DNS server can be properly tested by autograder. In our implementation of DNS, the query consists of DNS header and question, and the response consists of DNS header and record.
+We are also providing encoding and decoding functions to serialize and deserialize your DNS query and response. Be sure to use the functions we provide so that your DNS server can be properly tested by autograder. In our implementation of DNS, the query consists of a DNS header and a question, and the response consists of a DNS header and a record.
 
 **There are some slight nuances in the format of our DNS messages**. The main difference between what we do and what the RFC specifies is that the response should contain header + question + record, whereas our response is only header + record. Also, the size of each **encoded** object (represented as a 4-byte integer) is sent before sending the contents of the object. The overall procedure is outlined below:
 
@@ -248,7 +245,7 @@ We are also providing encoding and decoding functions to serialize and deseriali
 
 4. `miProxy` recvs() integer designating size of DNS Header -> `miProxy` recvs() DNS header via decode() -> `miProxy` recvs() integer designating size of DNS Record -> `miProxy` recvs() DNS Record via decode()
 
-**Remember to use `htonl` and `ntohl` when sending/receiving integers over the network!**
+**IMPORTANT: Remember to use `htonl` and `ntohl` when sending/receiving integers over the network!**
 
 ### Round-Robin Load Balancer
 One of the ways you will implement `nameserver` is as a simple round-robin based DNS load balancer. It should take as input a list of video server IP addresses on the command line; it responds to each request to resolve the name `video.cse.umich.edu` by returning the next IP address in the list, cycling back to the beginning when the list is exhausted.
@@ -306,7 +303,7 @@ To operate `nameserver`, it should be invoked as follows:
 
 **Exactly one of `--rr` or `--geo` will be specified.**
 
-> *Note: for simplicity, arguments will appear exactly as shown above (for both modes) during testing and grading. Error handling with the arguments is not explicitly tested but is highly recommended. At least printing the correct usage if something went wrong is worthwhile.*
+> *Note: for simplicity, arguments will appear exactly as shown above (for both modes) during testing and grading. Error handling with the arguments is not explicitly tested but is highly recommended. At the very least, printing the correct usage if something went wrong is worthwhile.*
 
 ### nameserver Logging
 Your DNS server must log its activity in a specific format. If the log specified by the user already exists, your DNS server overwrites the log. *After each* valid DNS query it services, it should append the following line to the log:
@@ -318,14 +315,13 @@ Your DNS server must log its activity in a specific format. If the log specified
 * `response-ip` The IP address you return in response.
 
 ### queryDNS utility
-
  `queryDNS` (in the starter_code directory) sends a DNS query to `nameserver` (just like a `miProxy` does), and outputs the reponse from DNS server. So you can test your `nameserver` using `queryDNS` without `miProxy`.
 
  The autograder uses queryDNS for the `nameserver` only test cases, so make sure your code is compatible.
 
  The command line to use `queryDNS` is:
  ```
-<path to the binary>/queryDNS <IP of nameserver> <port of nameserver>
+$ <path to the binary>/queryDNS <IP of nameserver> <port of nameserver>
  ```
 
  If everything goes well, you should get responses like `10.0.0.1`, `10.0.0.2` and `10.0.0.3`.
@@ -343,6 +339,7 @@ Your assigned repository must contain:
 
 * The source code for `miProxy`: all source files and a Makefile for `miProxy` should be in the path `<your_group_repo>/miProxy`
 * The source code for `nameserver`: all source files and a Makefile for `nameserver` should be in the path `<your_group_repo>/nameserver`
+* All the starter files in the ``<your_group_repo>/starter_files` directory.
 
 Example final structure of repository:
 ```
@@ -365,7 +362,6 @@ $ tree ./p2-joebb-and-partners/
     ├── launch_firefox.py
     └── start_server.py
 ```
-
 
 <a name="autograder"></a>
 ## Autograder
