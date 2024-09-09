@@ -1,4 +1,5 @@
 # Assignment 2: Video Streaming via CDN
+# Project Specs changing substantially. Please do not start yet!!!
 
 ### Due: October 13th, 2023 at 11:59 PM
 
