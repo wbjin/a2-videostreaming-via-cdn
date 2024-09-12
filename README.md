@@ -35,7 +35,7 @@ Implementing an entire CDN is difficult; instead, you'll focus on a simplified v
 
 You'll write the gray-shaded components (i.e. the DNS Server and Proxy) in the figure above.
 
-**Browser.** You'll use an off-the-shelf web browser (Firefox) to play videos served by your CDN (via your proxy).
+**Video Viewer.** You can use an off-the-shelf Video Viewer like a web browser (Firefox, Chrome, etc.) to play videos served by your CDN (via your proxy).
 
 **Proxy.** Rather than modify the video player itself, you will implement adaptive bitrate selection in an HTTP proxy. The player requests chunks with standard HTTP GET requests; your proxy will intercept these and modify them to retrieve whichever bitrate your algorithm deems appropriate.
 
@@ -64,91 +64,28 @@ After completing this programming assignment, students should be able to:
 
 * While testing the proxy you implement in part 1, you may notice that one browser may sometimes open multiple connections to your proxy server. Your proxy should still continue to function as expected in this case. In order to account for these multiple connections, you may use the browser IP address to uniquely identify each connection. This implies that while testing your proxy server, each browser will have a unique IP address. (For example, only one browser will have an IP address of 10.0.0.2)
 
-* Throughput should be measured on each fragment. For example, throughput should be calculated separately for both Seg1-Frag1 and Seg1-Frag2.
+* Throughput should be measured on each fragment. For example, throughput should be calculated separately for both Seg-1 and Seg-2.
 
 <a name="environment"></a>
 
 ## Environment Setup
-You will use [our provided VM](https://drive.google.com/file/d/1n67hWzSzCHomQMFwOOvIBpji9D0DHGiy/view?usp=sharing) for the assignment. This VM has all the components you need to get started on the assignment. While we tried to make the base VM work for all the projects, unfortunately this didn't come to fruition. Starting fresh also ensures a working environment free from accidental changes that may have been made in the first project.
+You will use AWS academy as your development environment. Please make sure you create an instance based on the shared AMI `EECS489-p2` and select t2-large for instance type.
 
-**We encourage you to use VMware instead of Virtual Box for this and ALL following projects, which is more compatible with different OS and is free with personal license.** For Windows and Linux users, we recommend [VMware Workstation Player](https://www.vmware.com/products/workstation-player/workstation-player-evaluation.html). For Mac users, we recommend [VMware Fusion Player](https://customerconnect.vmware.com/web/vmware/evalcenter?p=fusion-player-personal).
+To start the webserver, simply run the python script we provide by doing the following:
 
-**The firefox browser uses flash to play the video. However, flash has been disabled after 2020. So, you will need to change the system’s date to the past to enable flash.** When you want to test your miProxy with browser and actually see the video, you should do the following on the guest os:
-```bash
-# finishing compiling your software
+`h(n) sudo python3 start_server.py`
 
-# turn off the auto time sync
-sudo timedatectl set-ntp false
+Here `h(n)` is the host on mininet on which you are running the webserver. 
 
-# change the system time to when flash is usable
-sudo date -s "01/01/2020"
 
-# testing ...
+Like any HTTP web server (not HTTPS) these instances of the server will be reachable on TCP port `80`. For simplicity, all of our web traffic for this assignment will be unencrypted and be done over HTTP.
 
-# change the system time to now
-sudo date -s "the current time"
+For this project, we will be using an off the shelf browser (Firefox). To launch Firefox for this project, run the following command:
 
-# turn on the auto time sync
-sudo timedatectl set-net true`
-```
+`TODO: Update this command - python launch_firefox.py <profile_num>`
 
-**You can follow these steps to create a shared folder.**
-1. Go to “Virtual Machine Settings” and enable the shared folder feature.
-2. Add a shared folder.
-3. The shared folder should appear under /mnt/hgfs
-Note: if you cannot find the shared folder in the guest os, run the following command in the terminal of the guest:
-```bash
-# list the shared folders
-vmware-hgfsclient
-# mount all shared folders under /mnt/hgfs
-sudo vmhgfs-fuse .host:/ /mnt/hgfs -o subtype=vmhgfs-fuse,allow_other
-```
-
-**You can follow these steps to setup the internet.**
-1. Make sure your network adapter is in “NAT: Used to share the host’s IP address”.
-2. In the terminal of the guest, run:
-```bash
-ip link
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-2: ens33: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
-    link/ether 00:0c:29:a5:cd:b6 brd ff:ff:ff:ff:ff:ff
-
-# Your interface might not be ens33, you should use the name given above
-
-sudo ip link set ens33 up
-
-sudo dhclient ens33 -v
-```
-
-You may install tools that suit your workflow. However, **DO NOT update the software in the VM.** 
-You can find a guide on [how to troubleshoot the VM here](https://eecs388.org/vmguide.html#troubleshooting).
-
-This VM includes mininet, Apache, and all the files we will be streaming in this project. Both the username and password for this VM are `eecs489vm`. To start the Apache server, simply run the python script we provide by doing the following:
-
-`python start_server.py <host_number>`
-
-Here `<host_number>` is a required command line argument that specifies what host you are running on Mininet. This is important as if you're running on h1 in Mininet (which is given the IP address 10.0.0.1), passing in `1` into the `<host_number>` argument will help ensure that the Apache server instance will be bound to the 10.0.0.1 IP address. The `<host_number>` argument must be between 1 and 8.
-
-The Apache servers would not automatically stop after mininet is closed. You MUST manually stop the server. To stop the Apache server, run:
-
-`sudo killall httpd`
-
-Like any HTTP web server (not HTTPS) these instances of Apache will be reachable on TCP port `80`. For simplicity, all of our web traffic for this assignment will be unencrypted and be done over HTTP.
-
-For this project, we will be using an off the shelf browser (in this case, Firefox). To launch Firefox for this project, run the following command:
-
-`python launch_firefox.py <profile_num>`
-
-Here `<profile_num>` is a required command line argument that specifies the instance of Firefox you are launching. We support launching profiles 1-8, however, should you feel the need to test more thoroughly, you can launch it with a different number and simply create a new profile as needed. To ensure a separate connection for each instance of Firefox, we recommend that you launch Firefox with a different profile number (otherwise you might notice that different Firefox instances will sometimes share a connection with your proxy server).
-
-Also make sure you don't modify the Firefox profiles we set up as well as the configuration files inside the current Firefox build directory.
-
-To summarize: You will launch the web server, the Firefox browser, the proxy server, and the DNS server all inside Mininet. You should test your code inside Mininet from day 1.
 
 We're leaving it up to you to write your own Mininet topology script for testing the package as a whole. A simple Starfish topology (all hosts connected to one switch in the middle) should suffice for testing. 
-
-> **NOTE:** For this project, we are disabling caching in the browser. If you do choose to create a new profile, please double check if caching is disabled by going to the `about:config` page and setting both `browser.cache.disk.enable` and `browser.cache.memory.enable` to `false`.
 
 <a name="part1"></a>
 ## Part 1: Bitrate Adaptation in HTTP Proxy
@@ -189,17 +126,17 @@ Your proxy should learn which bitrates are available for a given video by parsin
 
 Your proxy will replace each chunk request with a request for the same chunk at the selected bitrate (in Kbps) by modifying the HTTP request’s `Request-URI`. Video chunk URIs are structured as follows:
 
-`/path/to/video/<bitrate>Seg<num>-Frag<num>`
+`/path/to/video/vid-<bitrate>-seg-<num>.m4s`
 
-For example, suppose the player requests fragment 3 of chunk 2 of the video `big_buck_bunny.f4m` at 500 Kbps:
+For example, suppose the player requests chunk 2 of the video `tears_of_steel.mp4` at 500 Kbps:
 
-`/path/to/video/500Seg2-Frag3`
+`/path/to/video/vid-500-seg-2.m4s`
 
 To switch to a higher bitrate, e.g., 1000 Kbps, the proxy should modify the URI like this:
 
-`/path/to/video/1000Seg2-Frag3`
+`/path/to/video/vid-1000-seg-2`
 
-> **IMPORTANT:** When the video player requests `big_buck_bunny.f4m`, you should instead return `big_buck_bunny_nolist.f4m` to the video player. This file does not list the available bitrates, preventing the video player from attempting its own bitrate adaptation. Your proxy should, however, fetch `big_buck_bunny.f4m` for itself (i.e., don’t return it to the client) so you can parse the list of available encodings as described above. Your proxy should keep this list of available bitrates in a global container (not on a connection by connection basis).
+> **IMPORTANT:** When the video player requests `tears_of_steel.mpd`, you should instead return `tears_of_steel.mp4_no_list.mpd` to the video player. This file does not list the available bitrates, preventing the video player from attempting its own bitrate adaptation. Your proxy should, however, fetch `tears_of_steel.mp4` for itself (i.e., don’t return it to the client) so you can parse the list of available encodings as described above. Your proxy should keep this list of available bitrates in a global container (not on a connection by connection basis).
 
 ### Running `miProxy`
 To operate `miProxy`, it should be invoked in one of two ways
@@ -247,7 +184,7 @@ In this mode of operation your proxy should obtain the web server's IP address b
 * `bitrate` The bitrate your proxy requested for this chunk in Kbps.
 
 ### Testing
-To play a video through your proxy, you launch an instance of the Apache server, launch Firefox (see above), and point the browser on your VM to the URL `http://<proxy_ip_addr>:<listen-port>/index.html`.
+To play a video through your proxy, you launch an instance of the web server, launch Firefox (see above), and point the browser on the URL `TODO: Update this information - http://<proxy_ip_addr>:<listen-port>/index.html`.
 
 
 <a name="part2"></a>
@@ -377,59 +314,18 @@ $ <path to the binary>/queryDNS <IP of nameserver> <port of nameserver>
 
 <a name="submission-instr"></a>
 ## Submission Instructions
-Submission to the autograder will be done [here](https://eecs489.eecs.umich.edu/). You will have 3 submissions per day (once the autograder is released).
+Submission to the autograder will be done [here](https://g489.eecs.umich.edu/). You will have 3 submissions per day (once the autograder is released).
 
 To submit:
-1. `git push` your work to the github repository we provided for the assignment.
-2. Go to autograder website specified above. You can specify what branch on your repository you want us to grade.
-3. Press submit. Your results will show up on that page once grading is finished.
+1. Submit all the files that you are using in your code, including any starter code. All the files should be configured to work in a flat directory structure
+2. Submit a Makefile with two rules:
+    - make miProxy -> this should produce an executable called miProxxy
+    - make nameserver -> this should produce an executable called nameserver
 
-Your assigned repository must contain:
-
-* The source code for `miProxy`: all source files and a Makefile for `miProxy` should be in the path `<your_group_repo>/miProxy`
-* The source code for `nameserver`: all source files and a Makefile for `nameserver` should be in the path `<your_group_repo>/nameserver`
-* All the starter files in the ``<your_group_repo>/starter_files` directory.
-
-Example final structure of repository:
-```
-$ tree ./p2-joebb-and-partners/
-./p2-joebb-and-partners/
-├── miProxy
-│   ├── Makefile <- supports "make clean" and "make"
-│   ├── ** source c or cpp files **
-│   └── miProxy  <- Binary executable present after running "make"
-├── nameserver
-│   ├── Makefile <- supports "make clean" and "make"
-│   ├── ** source c or cpp files **
-│   └── nameserver  <- Binary executable present after running "make"
-└── starter_files
-    ├── DNSHeader.h
-    ├── DNSQuestion.h
-    ├── DNSRecord.h
-    ├── sample_geography.txt
-    ├── sample_round_robin.txt
-    ├── launch_firefox.py
-    └── start_server.py
-```
 
 <a name="autograder"></a>
 ## Autograder
 The autograder will be released roughly halfway through the assignment. You are encouraged to design tests by yourselves to fully test your proxy server and DNS server. You should *NEVER* rely on the autograder to debug your code. Clarifications on the autograder will be added in this section:
-
-Our autograder runs the following versions of gcc/g++, please make sure your code is compatible.
-```
-$ gcc --version
-gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-Copyright (C) 2017 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-$ g++ --version
-g++ (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
-Copyright (C) 2017 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-```
 
 ## Acknowledgements
 This programming assignment is based on Peter Steenkiste's Project 3 from CMU CS 15-441: Computer Networks.
