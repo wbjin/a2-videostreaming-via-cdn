@@ -311,7 +311,7 @@ These can be used to estimate the throughput for a single segment. To smooth you
 
 $$T_\text{cur} = \alpha * T_\text{new} + (1 - \alpha) * T_\text{cur}$$
 
-The constant $0 \leq \alpha ≤ 1$ controls the tradeoff between a smooth throughput estimate (`alpha` closer to 0) and one that reacts quickly to changes (`alpha` closer to 1). You will control `alpha` via a command line argument. **When calculating the throughput for a client, initialize `T_cur` to zero for the first update**.
+The constant $$0 \leq \alpha ≤ 1$$ controls the tradeoff between a smooth throughput estimate (`alpha` closer to 0) and one that reacts quickly to changes (`alpha` closer to 1). You will control `alpha` via a command line argument. **When calculating the throughput for a client, initialize `T_cur` to zero for the first update**.
 
 ### Choosing a Bitrate
 Once your proxy has calculated the connection's current throughput, it should select the highest offered bitrate the connection can support. For this project, we say a connection can support a bitrate if the average throughput is at least 1.5 times the bitrate. For example, before your proxy should request chunks encoded at 1000 Kbps, its current throughput estimate should be at least 1500 Kbps (1.5 Mbps).
