@@ -72,7 +72,12 @@ $ git lfs install
 $ git lfs pull
 ```
 
-You can then create your own  **private** GitHub repository, and push these files to that repo. Your repository should be shared only with your group members, and should not be publicly accessible. **Making your solution code publicly accessible, even by accident, will be considered a violation of the Honor Code.** 
+You can then create your own  **private** GitHub repository, and push these files to that repo. Your repository should be shared only with your group members, and should not be publicly accessible. **Making your solution code publicly accessible, even by accident, will be considered a violation of the Honor Code.** You can create a private repository through the GitHub website, and add it as a remote to the cloned repository with 
+```bash
+$ git remote remove origin
+$ git remote add origin git@github.com:[Your-User:Your-Repo]
+$ git push --set-upstream origin main
+```
 
 The structure of the files is as follows:
 ```
