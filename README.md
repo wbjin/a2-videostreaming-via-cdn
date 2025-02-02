@@ -1,5 +1,6 @@
 ---
 layout: spec
+latex: true
 ---
 # Assignment 2: Adaptive Video Streaming via CDN
 
