@@ -65,7 +65,14 @@ This project has been adapted so that it can be run and tested on your own devic
 
 > Note: The only configuration that cannot be tested locally is running a geographic load balancer in conjunction with a load-balancing miProxy. This will have to occur on Mininet. However, you are able to locally test both (1) miProxy with a round-robin load balancer and (2) a geographic load balancer on its own. 
 
-To get started, clone this Github repository. You can then create your own  **private** GitHub repository, and push these files to that repo. Your repository should be shared only with your group members, and should not be publicly accessible. **Making your solution code publicly accessible, even by accident, will be considered a violation of the Honor Code.** 
+To get started, clone this Github repository. We are using `git-lfs` (Git Large File Storage) to store the video files in the Git repo. Follow the instructions [here](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage) to install `git-lfs` on your machine. Once you have installed `git-lfs`, you can run the following commands to download the video files. 
+
+```bash
+$ git lfs install
+$ git lfs pull
+```
+
+You can then create your own  **private** GitHub repository, and push these files to that repo. Your repository should be shared only with your group members, and should not be publicly accessible. **Making your solution code publicly accessible, even by accident, will be considered a violation of the Honor Code.** 
 
 The structure of the files is as follows:
 ```
@@ -110,16 +117,7 @@ We also encourage you to integrate CMake with your editor. For instance, VSCode 
 The two parts of the project can each be tested on their own before the integrated version is tested. You may wish to parallelize work among your groupmates; feel free to do so, but please remember that all individuals are responsible for understanding the entire project. 
 
 ### Running the Video Server
-We have provided a simple video server for you, implemented in the `videoserver/` directory. First, you will need to download and unzip some of the video files.
-
-We are using `git-lfs` (Git Large File Storage) to store the video files in the Git repo. Follow the instructions [here](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage) to install `git-lfs` on your machine. Once you have installed `git-lfs`, you can run the following commands to download the video files. 
-
-```bash
-$ git lfs install
-$ git lfs pull
-```
-
-We have provided a simple video server for you, implemented in the `videoserver/` directory. First, you will need to unzip some of the video files:
+We have provided a simple video server for you, implemented in the `videoserver/` directory. First, you will need to unzip some of the video files (which were pulled through Git LFS):
 ```bash
 $ cd videoserver/static/videos
 $ tar -xvzf michigan-hype-video.tar.gz
