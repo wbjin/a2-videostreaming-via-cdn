@@ -28,8 +28,8 @@ This project has the following goals:
 ### Video CDNs in the Real World
 <img src="img/real-CDN.png" title="Video CDN in the wild" alt="" height=300/>
 
-The figure above depicts a high level view of what this system looks like in the real world. Clients trying to stream a video first issue a DNS query to resolve the service's domain name to an IP address for one of the CDN's proxies. The CDN's authoritative DNS server selects the “best” content server for each particular proxy based on
-(1) the proxy's IP address (from which it learns the proxy's geographic location) and
+The figure above depicts a high level view of what this system looks like in the real world. Clients trying to stream a video first issue a DNS query to resolve the service's domain name to an IP address for one of the CDN's video servers. The CDN's authoritative DNS server selects the “best” content server for each particular client based on
+(1) the client's IP address (from which it learns the client's geographic location) and
 (2) current load on the content servers (which the servers periodically report to the DNS server).
 
 Once the client has the IP address for one of the content servers, it begins requesting chunks of the video the user requested. The video is encoded at multiple bitrates. As the client player receives video data, it calculates the throughput of the transfer and it requests the highest bitrate the connection can support (i.e. play a video smoothly, without buffering if possible). For instance, you have almost certainly used a system like this when using the default "Auto" quality option on YouTube:
