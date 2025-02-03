@@ -1,6 +1,5 @@
 
-cmake_minimum_required(VERSION 3.30)
-cmake_policy(SET CMP0167 NEW)
+cmake_minimum_required(VERSION 3.28)
 project(eecs489-project2-wn25)
 
 # Specify the C++ standard
@@ -11,6 +10,9 @@ set(CMAKE_BUILD_TYPE Debug)
 # Ensure that output executables are in the build/bin directory
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
+if (POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW)
+endif()
 
 # Fetch the required dependencies
 include(FetchContent)
