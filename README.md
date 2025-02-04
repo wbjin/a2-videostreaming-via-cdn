@@ -227,9 +227,9 @@ Within your client-serving loop, you may wonder about how much work you should d
 while (true)
 	select(...)
 	...
-	if (client socket is ready)
-		receive request from client
-		deal with single request (e.g forwarding to webserver, updating throughput, etc.)
+	if (socket is ready)
+		receive request from socket
+		deal with single request (e.g forwarding to webserver, forwarding back to client, updating throughput, etc.)
 		move on
 ```
 Your code should NOT look like:
@@ -242,7 +242,7 @@ while (true)
 		forward to webserver
 		receive webserver response
 		forward to client 
-		receive client "on-fragment-received"
+		receive "on-fragment-received" from client
 		move on
 ```
 
