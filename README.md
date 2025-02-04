@@ -71,6 +71,7 @@ To get started, clone this Github repository. We are using `git-lfs` (Git Large 
 $ git lfs install
 $ git lfs pull
 ```
+> Note: See this Ed post if you have trouble getting LFS to work: https://edstem.org/us/courses/70734/discussion/6088482. 
 
 You can then create your own  **private** GitHub repository, and push these files to that repo. Your repository should be shared only with your group members, and should not be publicly accessible. **Making your solution code publicly accessible, even by accident, will be considered a violation of the Honor Code.** You can create a private repository through the GitHub website, and add it as a remote to the cloned repository with 
 ```bash
@@ -583,7 +584,7 @@ You should terminate with a non-zero exit code if:
 * Any extra arguments are given. 
 
 ### Testing with `queryLoadBalancer`
-To facilitate testing your load balancer without having implemented `miProxy`, we provide a `queryLoadBalancer` executable in the `util/` directory. This executable will run on the Ubuntu VM from P1 (and other Ubuntu systems). We have also provided executables for ARM Macs and Windows. 
+To facilitate testing your load balancer without having implemented `miProxy`, we provide a `queryLoadBalancer` executable in the `util/` directory. This executable will run on the Ubuntu VM from P1 (and other Ubuntu systems such as Ubuntu WSL). We have also provided executables for ARM Macs. 
 
 ```
 queryLoadBalancer [OPTION...]
