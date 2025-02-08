@@ -55,25 +55,3 @@ int send_data(int sockfd, std::string_view bytes) {
     } while (sent < bytes.size());
     return 0;
 }
-
-int recv_data_until_newline(int sockfd, char *buffer) {
-    size_t total_received = 0; // total bytes received
-
-    while (total_received < MAX_MESSAGE_SIZE) {
-        ssize_t n = recv(sockfd, buffer + total_received, 1, MSG_WAITALL);
-
-        if (n < 0) {
-            return -1;
-        } else if (n == 0) {
-            return 0;
-        }
-
-        char c = buffer[total_received];
-        if (c == '\n') {
-            break; // stop reading if newline is received
-        }
-
-        total_received += n;
-    }
-    return total_received;
-}
