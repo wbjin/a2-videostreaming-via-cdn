@@ -55,10 +55,4 @@ int get_port_number(int sockfd);
  */
 int send_data(int sockfd, std::string_view bytes);
 
-/** 
- * Receive a message of at most MAX_MESSAGE_SIZE + 1 bytes from a socket sockfd. 
- * Will continue receiving byte-by-byte until a newline is received
- */
-int recv_data_until_newline(int sockfd, char *buffer);
-
 #endif // NETWORK_UTILS_H
