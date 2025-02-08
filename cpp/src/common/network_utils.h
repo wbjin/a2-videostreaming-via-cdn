@@ -6,10 +6,6 @@
 #include <netinet/in.h> // struct sockaddr_in
 #include <string_view>
 
-const unsigned int MAX_MESSAGE_SIZE = 255; 
-const unsigned int MAX_CLIENTS = 16; // Maximum number of clients that can connect
-const unsigned int DEFAULT_SERVER_PORT = 8888; // Port number to listen on
-
 /**
  * Make a server sockaddr given a port.
  *
