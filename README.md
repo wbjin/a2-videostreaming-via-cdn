@@ -288,7 +288,7 @@ You will notice that the `on-fragment-received` requests return an error code fr
 
 In HTTP 1.1, persistent connections are enabled by default. This means that the connection between the client and the proxy will remain open after the response is sent, allowing for multiple requests and responses to be sent over the same connection.
 
-In order to handle persistent connections, all requests and responses must include a `Content-Length` header. This header specifies the length of the message body in (bytes). The `Content-Length` header is used to determine when the message body has been fully received. If there is no message body following the headers, the `Content-Length` header will be set to 0.
+All responses must include a `Content-Length` header. This header specifies the length of the message body in (bytes). The `Content-Length` header is used to determine when the message body has been fully received. If there is no message body following the headers, the `Content-Length` header will be set to 0. GET requests typically do not include a `Content-Length` header at all, as they have no content. 
 
 This implies that HTTP packets have an unknown length; as such, it is difficult to parse them all-at-once, as you do not know how much of a buffer to allocate to store the data. To deal with this, you should parse HTTP packets byte-by-byte until you reach the end of the HTTP header. This will be demarcated by the four-byte sequence `\r\n\r\n`. Once you read this sequence, you can use the `Content-Length` header to figure out how much more data there is. Using something like `recv()` into a large fixed buffer may fail in case there are multiple requests awaiting to be read. 
 
