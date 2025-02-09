@@ -245,6 +245,7 @@ while (true)
 		receive "on-fragment-received" from client
 		move on
 ```
+The only exception to this is with the manifest file request, which you can handle in a blocking fashion (as you will have to parse it). 	
 
 ### Handling Client Requests
 
