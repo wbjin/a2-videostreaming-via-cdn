@@ -300,6 +300,7 @@ Additionally, when parsing headers, make sure that you parse them in a case **in
 Your proxy measures the the throughput between each client and itself to determine the bitrate on a per-client basis. Your proxy should estimate each stream's throughput once per video segment. Because sockets hide the underlying network details, we rely on the client to send application level messages indicating when it started and stopped finishing receiving each segment. 
 
 Throughput must be calculated independently on a per-client basis. To help you uniquely identify a client, each segment-related request from a client will include a `X-489-UUID` header in the HTTP headers. This is the **only** piece of information that you should use to disambiguate clients. As mentioned earlier, multiple client sockets may originate from the same client. Although not all requests will have this header, the following requests are guaranteed to contain it:
+- GET requests for a video manifest file
 - GET requests for a video segment
 - POST requests to `/on-fragment-received`
 
