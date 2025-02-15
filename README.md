@@ -229,7 +229,7 @@ while (true)
 	...
 	if (socket is ready)
 		receive request from socket
-		deal with single request (e.g forwarding to webserver, forwarding back to client, updating throughput, etc.)
+		deal with single request (e.g forwarding to webserver OR forwarding back to client OR updating throughput, but no more than one of these)
 		move on
 ```
 Your code should NOT look like:
@@ -245,7 +245,7 @@ while (true)
 		receive "on-fragment-received" from client
 		move on
 ```
-The only exception to this is with the manifest file request, which you can handle in a blocking fashion (as you will have to parse it). 	
+The only exception to this is with the manifest file request, which you can handle in a blocking fashion (as you will have to parse it). Otherwise, you should ensure that other requests are not blocked if a server takes a while to respond to a particular request.  	
 
 ### Handling Client Requests
 
@@ -494,6 +494,8 @@ NUM_SERVERS: 3
 
 ### Geographic Distance Load Balancer
 Next you’ll make your load balancer somewhat more sophisticated. Your load balancer must return the closest video server to the client based on the client IP address included in the request. In the real world, this would be done by querying a database mapping IP prefixes to geographic locations. For your implementation, however, you will be given information in a text file about the entire state of the network, and your server will have to return the closest geographic server to a client. 
+
+Please note that this is an **undirected**, **weighted** graph. "Closest" in this case refers to the least-cost path. 
 
 > Note: You may question how useful it is to return a closest server when all requests are going through the proxy anyway. You would be absolutely right about this, but you can easily imagine a scenario where the load balancer is actually a DNS server, and the bitrate adaptation behavior of the proxy occurs in the browser itself. 
 
