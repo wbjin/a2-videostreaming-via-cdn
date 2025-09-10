@@ -64,8 +64,8 @@
                 headers: {
                     "X-489-UUID": uuid,
                     "X-Fragment-Size": e.response.byteLength,
-                    "X-Timestamp-Start": e.request.requestStartDate.getTime(),
-                    "X-Timestamp-End": e.request.requestEndDate.getTime(),
+                    "X-Timestamp-Start": e.request.startDate.getTime(),
+                    "X-Timestamp-End": e.request.endDate.getTime(),
                     "Content-Length": 0,
                 },
             }).catch(error => {
