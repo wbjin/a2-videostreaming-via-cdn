@@ -4,7 +4,7 @@ latex: true
 ---
 # Assignment 2: Adaptive Video Streaming via CDN
 
-### Due: October 11, 2025 @ 11:59 PM
+### Due: October 10th, 2025 @ 11:59 PM
 
 Video traffic dominates the Internet. In this project, you will explore how video content distribution networks (CDNs) work. In particular, you will implement (1) adaptive bitrate selection through an HTTP proxy server and (2) load balancing. 
 
