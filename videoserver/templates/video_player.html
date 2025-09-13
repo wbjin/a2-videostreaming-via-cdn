@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ name }}</title>
     <!-- Load the DASH.js library from a CDN -->
-<!--     <script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script>  -->
+    <script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script> 
     <!-- Fallback to local copy if CDN fails -->
     <script>
         if (typeof dashjs === 'undefined') {
@@ -59,7 +59,7 @@
                 return;
             }
             
-            fetch('/on-fragment-received', {
+           fetch('/on-fragment-received', {
                 method: 'POST',
                 headers: {
                     "X-489-UUID": uuid,
