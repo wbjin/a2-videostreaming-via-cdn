@@ -124,7 +124,7 @@ This should result in executables `build/bin/miProxy` and `build/bin/loadBalance
 
 We also encourage you to integrate CMake with your editor. For instance, VSCode has a CMakeTools extension. This enables VSCode's intellisense to properly find code dependencies, which can eliminate annoying fake syntax errors. There are many resources online for you to figure out how to do this. 
 
-The two parts of the project can each be tested on their own before the integrated version is tested. You may wish to parallelize work among your groupmates; feel free to do so, but please remember that all individuals are responsible for understanding the entire project. 
+The two parts of the project can each be tested on their own before the integrated version is tested. Although the project is split into parts, we strongly encourage that you don't divide up the work. Every group member should work on every part of the project, as everyone will be tested on it.
 
 ### Running the Video Server
 We have provided a simple video server for you, implemented in the `videoserver/` directory. First, you will need to unzip some of the video files (which were pulled through Git LFS):
@@ -655,4 +655,5 @@ video/
 		...
 ```
 And you're done! You can move the folders around as you see fit; make sure you make corresponding changes in the `.mpd` file if you change the folder structure. Have fun!
+
 
