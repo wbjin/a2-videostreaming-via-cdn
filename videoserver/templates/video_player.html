@@ -44,13 +44,10 @@
         var uuid = generateUUID();
         var manifestUrl = `/videos/{{ slug }}/vid.mpd`;
 
-        player.extend("RequestModifier", function () {
-            return {
-                modifyRequestHeader: function (xhr) {
-                    xhr.setRequestHeader('X-489-UUID', uuid);
-                    return xhr;
-                }
-            };
+        player.addRequestInterceptor(function (request) {
+            request.headers = request.headers || {};
+            request.headers['X-489-UUID'] = uuid;
+            return Promise.resolve(request);
         });
 
         player.on(dashjs.MediaPlayer.events.FRAGMENT_LOADING_COMPLETED, function (e) {
