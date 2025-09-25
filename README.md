@@ -443,7 +443,7 @@ A good first step is ensuring that your proxy can simply forward requests in bot
 5. Measure the throughput of each video segment
 6. Capture video manifest file HTTP requests, send a manifest request to web server, and send another request to return a no list manifest file to client 
 7. Capture video segment HTTP requests and modify the request according to measured throughputs 
-8. Be able to connect to the load balacner and parse a response
+8. Be able to connect to the load balancer and parse a response
 
 When testing `miProxy` as a whole, you should test it under these scenarios progressively: 
 
@@ -456,7 +456,7 @@ When testing `miProxy` as a whole, you should test it under these scenarios prog
 
 You will want to test your proxy with different bandwidths to ensure that it is correctly selecting the appropriate bitrate.
 
-Browsers including Google Chrome and Firefox provide tools to throttle network speeds. In Chrome, you can access this by opening the developer tools (Right Click --> Inspect Element) and clicking on the Network tab. Here, you will see a dropdown menu that allows you to throttle network speeds.
+Browsers, including Google Chrome and Firefox, provide tools to throttle network speeds. In Chrome, you can access this by opening the developer tools (Right Click --> Inspect Element) and clicking on the Network tab. Here, you will see a dropdown menu that allows you to throttle network speeds.
 
 <img src="img/throttling-1.png" title="Network Throttle in Chrome" alt="" height=300/>
 <img src="img/throttling-2.png" title="Network Throttle in Chrome" alt="" height=300/>
@@ -474,12 +474,12 @@ Firefox has equivalent functionality in the Network tab of the developer tools. 
 
 To spread the load of serving videos among a group of servers, most CDNs perform some kind of load balancing. A common technique is to configure the CDN's authoritative DNS server to resolve a single domain name to one out of a set of IP addresses belonging to replicated content servers. The DNS server can use various strategies to spread the load, e.g., round-robin, shortest geographic distance, or current server load (which requires servers to periodically report their statuses to the DNS server). 
 
-In this part, you will write a simple load balancing server, `loadBalancer`, that implements load balancing in two different ways: round-robin and geographic distance. As mentioned earlier, we will not implement a DNS server in order to run videoservers locally, as your load balancer will need to specify both an IP address and a port. 
+In this part, you will write a simple load-balancing server, `loadBalancer`, that implements load balancing in two different ways: round-robin and geographic distance. As mentioned earlier, we will not implement a DNS server in order to run videoservers locally, as your load balancer will need to specify both an IP address and a port. 
 
 ### Protocol 
 The protocol used by the load balancer is defined in `cpp/src/common/loadBalancerProtocol.h`. `miProxy` should send a `LoadBalancerRequest`, and the load balancer should respond with a `LoadBalancerResponse`. 
 
-Remember to use byte order conversion functions (i.e. `ntohl`, `htonl`, `ntohs`, `htons`) when sending/receiving integers over the network! The port and request ID are both interpreted as integers; the IP address is not. Please see Discussion 1 materials for why these are important. 
+Remember to use byte order conversion functions (i.e., `ntohl`, `htonl`, `ntohs`, `htons`) when sending/receiving integers over the network! The port and request ID are both interpreted as integers; the IP address is not. Please see Discussion 1 materials for why these are important. 
 
 ### Round-Robin Load Balancer
 One of the ways you will implement the load balancer is as a simple round-robin load balancer. It will take a file containing a list of videoserver IP addresses and ports on the command line. Beginning at the start of the list, the load balancer will return the next IP address in the list for each subsequent request, looping back to the top of the list when it reaches the end. 
@@ -655,5 +655,6 @@ video/
 		...
 ```
 And you're done! You can move the folders around as you see fit; make sure you make corresponding changes in the `.mpd` file if you change the folder structure. Have fun!
+
 
 
